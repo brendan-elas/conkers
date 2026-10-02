@@ -1,6 +1,6 @@
 # Conkers — build plan v8
 
-State: phase 1 of 5. Steps 1 to 4 done (scaffold, cell layouts, physics reference, lock + unlock scripts proven in an OTDA-aware oracle). Next: step 5, brain verbs and the regtest round-trip on a Chronicle node. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
+State: phase 1 of 5. Steps 1 to 4 done; step 5 half done: the verbs exist as a TypeScript reference (`mirror/src/verbs.ts`, 55 tests) and the regtest harness is written (`scripts/regtest.sh`, `mirror/scripts/regtest.ts`) but has not run yet, because this cloud container has no Docker daemon. Next: run the harness on the Mac, then the Zig port of the verbs into the brain. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
 
 ## Our repo, their code as a dependency
 
@@ -119,7 +119,7 @@ So sound is a beacon and setup channel, not a bulk channel. ggwave carries ident
 2. `cartridge.json`: cells `conkers.nut` (LINEAR), `conkers.string` (LINEAR), `conkers.player` (PERSISTENT, keyed by identity: challenges, withdrawals, stalls), `conkers.swing` and `conkers.withdraw` (EPHEMERAL), `conkers.match` (EPHEMERAL); cap `cap.conkers.play`; `extensions` section per WORLD-BASE-LAYER §5.1. 2 days.
 3. Genesis spec and vectors: RFC 6979 issuer signature, `h0 = sha256(S || serial)`, chain of 7. 2 days.
 4. Mirror package: `deriveConker`, tx builders, `otdaDigest`, `previewMatch`, `scoreSwing`. 5 days.
-5. Lock scripts in the sectioned assembler, cleavage-checked, digests matched mirror vs Zig; brain verbs `mint`, `resolve`, `transfer`, `withdraw`; regtest round-trip. 10 days.
+5. Lock scripts (done, oracle-proven); verbs as a TS reference (done: mint, verifyGenesis, resolveMatch with full replay and signature checks, transfer); regtest round-trip on a Chronicle node (harness written, run on a machine with Docker); Zig port of the verbs into the brain (needs the Zig toolchain). 10 days.
 
 ## Phase 2: Solo rig (3 weeks)
 

@@ -15,7 +15,7 @@ import { otdaDigest, SIGHASH, type OtdaTx } from './otda.js';
 import { OPS, readScriptNum, scriptNum, concat } from './script.js';
 
 export interface ExecContext { tx: OtdaTx; inputIndex: number }
-export interface ExecResult { ok: boolean; error?: string; stack: Uint8Array[]; ops: number }
+export interface ExecResult { ok: boolean; error?: string; stack: Uint8Array[]; alt: Uint8Array[]; ops: number }
 
 const truthy = (b: Uint8Array): boolean => { for (let i = 0; i < b.length; i++) { if (b[i] !== 0) return !(i === b.length - 1 && b[i] === 0x80); } return false; };
 const bool = (v: boolean): Uint8Array => (v ? Uint8Array.of(1) : new Uint8Array(0));
@@ -23,7 +23,7 @@ const eq = (a: Uint8Array, b: Uint8Array): boolean => a.length === b.length && a
 
 export function execute(unlock: Uint8Array, lock: Uint8Array, ctx: ExecContext): ExecResult {
   const stack: Uint8Array[] = []; const alt: Uint8Array[] = []; let ops = 0;
-  const fail = (error: string): ExecResult => ({ ok: false, error, stack, ops });
+  const fail = (error: string): ExecResult => ({ ok: false, error, stack, alt, ops });
   const run = (script: Uint8Array, isLock: boolean): string | null => {
     const cond: boolean[] = []; let codesep = 0; let pc = 0;
     const pop = (): Uint8Array => { const v = stack.pop(); if (v === undefined) throw new Error('stack underflow'); return v; };
@@ -126,5 +126,5 @@ export function execute(unlock: Uint8Array, lock: Uint8Array, ctx: ExecContext):
   const e1 = run(unlock, false); if (e1) return fail(`unlock: ${e1}`);
   const e2 = run(lock, true); if (e2) return fail(`lock: ${e2}`);
   if (!stack.length || !truthy(stack[stack.length - 1]!)) return fail('false top of stack');
-  return { ok: true, stack, ops };
+  return { ok: true, stack, alt, ops };
 }

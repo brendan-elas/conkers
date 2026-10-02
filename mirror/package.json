@@ -8,7 +8,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "doc:cells": "node --experimental-strip-types scripts/cells-doc.ts",
-    "vectors": "node --experimental-strip-types scripts/make-vectors.ts"
+    "vectors": "node --experimental-strip-types scripts/make-vectors.ts",
+    "regtest": "node --experimental-strip-types scripts/regtest.ts"
   },
   "dependencies": {
     "@noble/curves": "^1.9.7",

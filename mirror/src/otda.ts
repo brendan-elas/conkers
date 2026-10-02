@@ -128,3 +128,45 @@ export function otdaPreimage(tx: OtdaTx, inputIndex: number, scriptCode: Uint8Ar
   w.u32le(flags);
   return w.out();
 }
+
+// ── full transaction serialisation (for broadcasting on regtest) ──────────────
+export interface FullInput extends OtdaInput { scriptSig: Uint8Array }
+export interface FullTx { version: number; inputs: FullInput[]; outputs: OtdaOutput[]; lockTime: number }
+
+export function serializeTx(tx: FullTx): Uint8Array {
+  const w = new Writer();
+  w.u32le(tx.version); w.varint(tx.inputs.length);
+  for (const i of tx.inputs) { w.bytes(i.prevTxId); w.u32le(i.prevIndex); w.varbytes(i.scriptSig); w.u32le(i.sequence); }
+  w.varint(tx.outputs.length);
+  for (const o of tx.outputs) { w.u64le(o.satoshis); w.varbytes(o.script); }
+  w.u32le(tx.lockTime);
+  return w.out();
+}
+
+class Reader {
+  at = 0; constructor(private b: Uint8Array) {}
+  u8(): number { return this.b[this.at++]!; }
+  u32le(): number { const v = new DataView(this.b.buffer, this.b.byteOffset + this.at).getUint32(0, true); this.at += 4; return v; }
+  u64le(): bigint { const v = new DataView(this.b.buffer, this.b.byteOffset + this.at).getBigUint64(0, true); this.at += 8; return v; }
+  varint(): number { const f = this.u8(); if (f < 0xfd) return f; if (f === 0xfd) { const v = this.b[this.at]! | (this.b[this.at + 1]! << 8); this.at += 2; return v; } if (f === 0xfe) return this.u32le(); return Number(this.u64le()); }
+  bytes(n: number): Uint8Array { const v = this.b.slice(this.at, this.at + n); this.at += n; return v; }
+  varbytes(): Uint8Array { return this.bytes(this.varint()); }
+}
+
+export function parseTx(raw: Uint8Array): FullTx {
+  const r = new Reader(raw);
+  const version = r.u32le(); const nIn = r.varint(); const inputs: FullInput[] = [];
+  for (let i = 0; i < nIn; i++) inputs.push({ prevTxId: r.bytes(32), prevIndex: r.u32le(), scriptSig: r.varbytes(), sequence: r.u32le() });
+  const nOut = r.varint(); const outputs: OtdaOutput[] = [];
+  for (let i = 0; i < nOut; i++) outputs.push({ satoshis: r.u64le(), script: r.varbytes() });
+  return { version, inputs, outputs, lockTime: r.u32le() };
+}
+
+/** Display txid (big-endian hex) of a serialised transaction. */
+export function txidHex(raw: Uint8Array): string {
+  return Array.from(sha256(sha256(raw)).reverse(), (n) => n.toString(16).padStart(2, '0')).join('');
+}
+/** Display txid hex → 32 wire bytes (little-endian) for an outpoint. */
+export function txidToWire(hex: string): Uint8Array {
+  return Uint8Array.from(hex.match(/../g)!.map((b) => parseInt(b, 16))).reverse();
+}

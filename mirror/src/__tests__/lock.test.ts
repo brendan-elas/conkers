@@ -24,6 +24,8 @@ describe('conker lock', () => {
   it('spends with a valid owner signature, correct version, flag, locktime and non-final sequence', () => {
     const r = spend(base());
     expect(r.error).toBeUndefined(); expect(r.ok).toBe(true);
+    // CLEANSTACK: one item left on the main stack, nothing on the alt stack
+    expect(r.stack).toHaveLength(1); expect(r.alt).toHaveLength(0);
   });
   it('the push-tx block derives exactly the signature the mirror predicts, and it verifies under the baked pubkey', () => {
     const tx = base();
