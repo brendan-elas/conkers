@@ -13,7 +13,7 @@ const tx: OtdaTx = {
 };
 const code = Uint8Array.of(0x76, 0xa9, 0xab, 0x14, ...new Array(20).fill(7), 0x88, 0xac);
 
-describe('otdaDigest under 0xA2 (NONE|ANYONECANPAY|CHRONICLE)', () => {
+describe('otdaDigest under 0xE2 (NONE|ANYONECANPAY|CHRONICLE|FORKID)', () => {
   const d = otdaDigest(tx, 0, code, SIGHASH.CONKERS);
   it('ignores the other inputs (ANYONECANPAY)', () => {
     const fewer = { ...tx, inputs: [tx.inputs[0]!] };

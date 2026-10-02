@@ -3,7 +3,7 @@
 Read `docs/PLAN.md` first. It is the source of truth for scope and decisions.
 
 ## Rules
-- The lock is `SIGHASH_NONE | ANYONECANPAY | CHRONICLE` (0xA2), OTDA digest. No Rúnar on the lock path.
+- The lock is `SIGHASH_NONE | ANYONECANPAY | CHRONICLE | FORKID` (0xE2), OTDA digest. FORKID stays set: sv-node 1.2.2 rejects any sig without it. No Rúnar on the lock path.
 - The swing sound is a real whoosh with a fixed-pitch tonal core. Pitch never encodes anything.
 - ggwave carries identity, game setup and small data. Never the whoosh.
 - Withdraw and stall counters live on the player (`conkers.player`, keyed by cert-id), never on the conker.

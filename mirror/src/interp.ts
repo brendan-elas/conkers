@@ -107,6 +107,8 @@ export function execute(unlock: Uint8Array, lock: Uint8Array, ctx: ExecContext):
             let ok = false;
             if (sig.length > 0 && isLock) {
               const flags = sig[sig.length - 1]!;
+              // sv-node 1.2.2 CheckSignatureEncoding: FORKID is mandatory even with CHRONICLE set
+              if (!(flags & SIGHASH.FORKID)) return 'Signature must use SIGHASH_FORKID';
               const der = sig.slice(0, -1);
               const code = script.slice(codesep);
               const digest = (flags & SIGHASH.CHRONICLE) ? otdaDigest(ctx.tx, ctx.inputIndex, code, flags) : null;

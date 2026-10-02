@@ -3,7 +3,7 @@
 Buy a conker for a dollar. Swing your phone. Hit your friend's conker. On-chain.
 
 A conker is a pair of LINEAR Semantos cells (nut + string) locked in a BSV UTXO
-under `SIGHASH_NONE | ANYONECANPAY | CHRONICLE` (0xA2). Properties come from a
+under `SIGHASH_NONE | ANYONECANPAY | CHRONICLE | FORKID` (0xE2). Properties come from a
 hash chain over a fixed issuer signature, so anyone can verify them. Two phones
 play by swinging: the striker's phone plays a whoosh, the target's phone
 measures the Doppler shift, both sign the result.

@@ -1,6 +1,6 @@
 # Conkers — build plan v8
 
-State: phase 1 of 5. Steps 1 to 4 done; step 5 half done: the verbs exist as a TypeScript reference (`mirror/src/verbs.ts`, 55 tests) and the regtest harness is written (`scripts/regtest.sh`, `mirror/scripts/regtest.ts`) but has not run yet, because this cloud container has no Docker daemon. Next: run the harness on the Mac, then the Zig port of the verbs into the brain. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
+State: phase 1 of 5. Steps 1 to 4 done; step 5 half done: the verbs exist as a TypeScript reference (`mirror/src/verbs.ts`, 55 tests) and the regtest round-trip is green on Bitcoin SV 1.2.2 (2026-10-02: mint, 0xE2 transfer with a wallet fee input added after our signature, three rejections, string spend). Next: the Zig port of the verbs into the brain. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
 
 ## Our repo, their code as a dependency
 
@@ -51,7 +51,7 @@ BSV path via x402 at half the card price per pack. Stripe receipt via `payment-a
 
 ## The lock (unchanged from v4)
 
-Flags `NONE | ANYONECANPAY | CHRONICLE` = **0xA2**, OTDA digest. Script pins `OP_VER` = 1, scriptCode after the last `OP_CODESEPARATOR`, nLocktime and non-final sequence. No Rúnar. Digest from a TS port of `computeSigHashOTDA` in the mirror package, cross-checked against `core/cell-engine/src/sighash.zig`. Outputs are not committed, so damage and ownership transfer are enforced by the LINEAR cell graph and the signed match record.
+Flags `NONE | ANYONECANPAY | CHRONICLE | FORKID` = **0xE2**, OTDA digest (FORKID must stay set: sv-node 1.2.2 enforces `MUST_USE_FORKID` even under Chronicle, and CHRONICLE on top selects OTDA). Script pins `OP_VER` = 1, scriptCode after the last `OP_CODESEPARATOR`, nLocktime and non-final sequence. No Rúnar. Digest from a TS port of `computeSigHashOTDA` in the mirror package, cross-checked against `core/cell-engine/src/sighash.zig`. Outputs are not committed, so damage and ownership transfer are enforced by the LINEAR cell graph and the signed match record.
 
 ## The swing: a real whoosh, and Doppler on it
 

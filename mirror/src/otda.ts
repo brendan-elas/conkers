@@ -3,7 +3,7 @@
  * CHRONICLE sighash bit (0x20). Reference: vendor/semantos-core/core/cell-engine/src/sighash.zig
  * (`computeSigHashOTDA`) and docs/design/LOCKSCRIPT-CLEAVAGE.md §1.1.
  *
- * Conkers signs under NONE | ANYONECANPAY | CHRONICLE = 0xA2, so the digest
+ * Conkers signs under NONE | ANYONECANPAY | CHRONICLE | FORKID = 0xE2, so the digest
  * commits to: nVersion, this input's outpoint, scriptCode (the lock script
  * after its last OP_CODESEPARATOR, separators removed), this input's
  * nSequence, no outputs, nLocktime, and the 4-byte sighash type.
@@ -21,8 +21,13 @@ export const SIGHASH = {
   CHRONICLE: 0x20,
   FORKID: 0x40,
   ANYONECANPAY: 0x80,
-  /** the Conkers lock flag */
-  CONKERS: 0x02 | 0x80 | 0x20,
+  /**
+   * The Conkers lock flag: NONE | ANYONECANPAY | CHRONICLE | FORKID = 0xE2.
+   * sv-node 1.2.2 keeps SCRIPT_ERR_MUST_USE_FORKID under STRICTENC with no Chronicle
+   * exemption, so the FORKID bit must stay set; CHRONICLE on top selects the OTDA digest
+   * (SignatureHash: BIP-143 only when FORKID && !CHRONICLE). Proven on regtest 2026-10-02.
+   */
+  CONKERS: 0x02 | 0x80 | 0x20 | 0x40,
 } as const;
 
 export interface OtdaInput {
@@ -96,7 +101,7 @@ export function otdaDigest(tx: OtdaTx, inputIndex: number, scriptCode: Uint8Arra
 
 /**
  * The OTDA preimage bytes (what the unlocking script pushes for OP_PUSH_TX).
- * Under 0xA2: version(4) 01 outpoint(36) varint(code) code sequence(4) 00 locktime(4) a2000000.
+ * Under 0xE2: version(4) 01 outpoint(36) varint(code) code sequence(4) 00 locktime(4) e2000000.
  */
 export function otdaPreimage(tx: OtdaTx, inputIndex: number, scriptCode: Uint8Array, flags: number): Uint8Array {
   const base = flags & 0x1f;

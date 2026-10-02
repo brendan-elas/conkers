@@ -13,7 +13,7 @@ Phase 1 of 5. Steps 1 to 4 done. Step 5 half done.
 | 3 physics + vectors | done | `mirror/src/physics.ts`, `spec/swing-score.md`, `spec/vectors.json` (DEV issuer) |
 | 4 lock + unlock | done, oracle-proven | `mirror/src/script.ts`, `mirror/src/interp.ts`, `spec/lock.md`, `scripts/conker.cs` |
 | 5 verbs | TS reference done | `mirror/src/verbs.ts` |
-| 5 regtest | written, **never run** | `scripts/regtest.sh`, `mirror/scripts/regtest.ts` |
+| 5 regtest | **green** on sv-node 1.2.2 (2026-10-02) | `scripts/regtest.sh`, `mirror/scripts/regtest.ts` |
 | 5 Zig brain port | not started | `brain/` (empty) |
 
 55 tests: `pnpm install && pnpm test`.
@@ -22,14 +22,14 @@ Phase 1 of 5. Steps 1 to 4 done. Step 5 half done.
 
 ```
 scripts/regtest.sh start                      # Chronicle sv-node in Docker, chronicleactivationheight=1
-pnpm --filter @conkers/mirror regtest         # mint, 0xA2 transfer with wallet fee input, 3 rejections
+pnpm --filter @conkers/mirror regtest         # mint, 0xE2 transfer with wallet fee input, 3 rejections
 ```
 
-Expected last line: `ALL GREEN: …`. This is the first contact between the lock and a real node. Things most likely to bite: `fundrawtransaction` option names on this sv-node build, 1000-sat outputs vs dust policy, `signrawtransactionwithwallet` vs legacy `signrawtransaction`, and whether the node's OTDA path applies legacy FindAndDelete (harmless for us, the sigs are not in the scriptCode).
+Expected last line: `ALL GREEN: …`. Ran green on 2026-10-02 after two fixes: (a) the harness runs under `vite-node` (plain `node --experimental-strip-types` cannot follow the `.js` import suffixes), and the spend picks its fee input from `listunspent` by hand because this sv-node's `fundrawtransaction` dummy-signs every existing input and fails on ours; (b) the lock flag became 0xE2, see below. 1000-sat outputs, `signrawtransactionwithwallet` and OTDA all worked first time.
 
 ## Decisions already made (do not reopen)
 
-1. Lock flags `NONE | ANYONECANPAY | CHRONICLE` = 0xA2, OTDA digest. Outputs are not consensus-enforced; the LINEAR cell graph and signed match record enforce damage and ownership.
+1. Lock flags `NONE | ANYONECANPAY | CHRONICLE | FORKID` = 0xE2, OTDA digest. (Was 0xA2 until regtest: sv-node 1.2.2 rejects any signature without FORKID, Chronicle or not. CHRONICLE on top of FORKID selects OTDA.) Outputs are not consensus-enforced; the LINEAR cell graph and signed match record enforce damage and ownership.
 2. No Rúnar on the lock path. The push-tx block is Brendogg's verbatim one from `@semantos/wallet` (`vendor/semantos-core/core/wallet/src/tx/push-tx.ts`).
 3. Swing sound is a real whoosh with a fixed-pitch 4.5 kHz tonal core; Doppler is measured by correlating against pre-stretched templates. Pitch never encodes anything.
 4. ggwave carries identity, challenge, nonces and small turn data over sound. Co-location proof = each phone signs the nonce it heard.
@@ -40,6 +40,7 @@ Expected last line: `ALL GREEN: …`. This is the first contact between the lock
 
 ## Things learned the hard way
 
+- The vendored `sighash.zig` says FORKID is "ignored under OTDA". For the digest, yes; for the node's signature-encoding check, no. `MUST_USE_FORKID` fires on any sig without 0x40. The TS oracle (`interp.ts`) now enforces this too.
 - The Semantos cell-engine cannot run the lock: `OP_CHECKSIG` is BIP-143-only and demands FORKID, `OP_CODESEPARATOR` is a no-op, `OP_VER` fails, numbers are i64. It is the handler VM only. Proof = `mirror/src/interp.ts` oracle + Chronicle regtest.
 - `core/cell-engine/tools/asm.zig` lacks OP_SPLIT / OP_BIN2NUM / OP_NUM2BIN mnemonics. Feed it hex from `toAsm(conkerLock(...))` or add the entries.
 - Fine-grained GitHub tokens cannot target `semantos/semantos-core` (collaborator, not member). CI therefore skips the submodule; add a classic `repo`-scope token as `SEMANTOS_CORE_READ_TOKEN` when `web/` first imports `@semantos/world-client`.

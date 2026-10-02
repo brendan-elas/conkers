@@ -1,8 +1,8 @@
 /**
  * The conker lock — docs/PLAN.md "The lock", spec/lock.md.
  *
- * Unlock:  <ownerSig|0xA2> <ownerPubKey> <preimage>
- * Lock:    pins nVersion = 1, sighash = 0xA2, nLocktime >= mintLocktime, nSequence
+ * Unlock:  <ownerSig|0xE2> <ownerPubKey> <preimage>
+ * Lock:    pins nVersion = 1, sighash = 0xE2, nLocktime >= mintLocktime, nSequence
  *          non-final, then OP_CODESEPARATOR, then OP_PUSH_TX authenticates the
  *          preimage and the owner's key is checked. Both signatures therefore sign
  *          only the tail after the separator, and the preimage the spender pushes
@@ -11,7 +11,7 @@
  * The OP_PUSH_TX block is Brendogg's verbatim construction from
  * vendor/semantos-core/core/wallet/src/tx/push-tx.ts (sighash flag on the alt
  * stack). It only hashes the pushed preimage, so it is digest-algorithm
- * agnostic: with flag 0xA2 the node compares against its OTDA digest.
+ * agnostic: with flag 0xE2 the node compares against its OTDA digest.
  */
 import { sha256 } from '@noble/hashes/sha256';
 import { ripemd160 } from '@noble/hashes/ripemd160';
@@ -144,7 +144,9 @@ export interface LockParams {
   mintLocktime: number;
 }
 
-export const CONKERS_FLAG = SIGHASH.CONKERS; // 0xA2
+export const CONKERS_FLAG = SIGHASH.CONKERS; // 0xE2
+const FLAG_HEX = CONKERS_FLAG.toString(16); // 'e2'
+const FLAG_LE32 = FLAG_HEX + '000000'; // the preimage's last 4 bytes
 
 /** Everything before the separator: pins on the pushed preimage (copied, then dropped). */
 function lockHead(p: LockParams): Uint8Array {
@@ -152,8 +154,8 @@ function lockHead(p: LockParams): Uint8Array {
     asm('OP_DUP OP_TOALTSTACK'),
     // nVersion == 1
     asm('OP_DUP OP_4 OP_SPLIT OP_DROP 01000000 OP_EQUALVERIFY'),
-    // sighash type == a2000000 (last 4 bytes)
-    asm('OP_DUP OP_SIZE OP_4 OP_SUB OP_SPLIT OP_NIP a2000000 OP_EQUALVERIFY'),
+    // sighash type == e2000000 (last 4 bytes)
+    asm(`OP_DUP OP_SIZE OP_4 OP_SUB OP_SPLIT OP_NIP ${FLAG_LE32} OP_EQUALVERIFY`),
     // nLocktime (bytes len-8 .. len-4) >= mintLocktime; 00 appended so the number is positive
     asm('OP_DUP OP_SIZE OP_8 OP_SUB OP_SPLIT OP_NIP OP_4 OP_SPLIT OP_DROP 00 OP_CAT OP_BIN2NUM'),
     pushNum(BigInt(p.mintLocktime)),
@@ -166,7 +168,7 @@ function lockHead(p: LockParams): Uint8Array {
 /** Everything after the separator: this is the scriptCode both signatures sign. */
 export function lockTail(p: LockParams): Uint8Array {
   return concat(
-    asm('OP_FROMALTSTACK a2 OP_TOALTSTACK'),
+    asm(`OP_FROMALTSTACK ${FLAG_HEX} OP_TOALTSTACK`),
     asm(PUSHTX_ASM),
     asm('OP_CHECKSIGVERIFY'),
     asm('OP_DUP OP_HASH160'), push(p.ownerPkh), asm('OP_EQUALVERIFY OP_CHECKSIG'),
@@ -185,7 +187,7 @@ export function conkerPreimage(tx: OtdaTx, inputIndex: number, lock: LockParams)
   return otdaPreimage(tx, inputIndex, lockTail(lock), CONKERS_FLAG);
 }
 
-/** Owner signature (DER, low-S) over the OTDA digest of the tail, with the 0xA2 flag appended. */
+/** Owner signature (DER, low-S) over the OTDA digest of the tail, with the 0xE2 flag appended. */
 export function signOwner(tx: OtdaTx, inputIndex: number, lock: LockParams, ownerPriv: Uint8Array): Uint8Array {
   const digest = otdaDigest(tx, inputIndex, lockTail(lock), CONKERS_FLAG);
   const sig = secp256k1.sign(digest, ownerPriv, { lowS: true }).toDERRawBytes();

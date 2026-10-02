@@ -542,7 +542,7 @@
   },
   "_notes": {
     "domainFlag": "0 is a placeholder until a capability page is allocated.",
-    "sighash": "0xA2 = NONE|ANYONECANPAY|CHRONICLE. OTDA digest. See docs/PLAN.md 'The lock'.",
+    "sighash": "0xE2 = NONE|ANYONECANPAY|CHRONICLE|FORKID. OTDA digest; FORKID is mandatory on sv-node 1.2.2. See spec/lock.md.",
     "extension": "Shape follows vendor/semantos-core/docs/design/WORLD-BASE-LAYER.md §5.1; the client contract is packages/world-client/src/extension.ts."
   }
 }

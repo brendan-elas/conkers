@@ -34,7 +34,7 @@ describe('conker lock', () => {
     const digest = otdaDigest(tx, 0, lockTail(lock), CONKERS_FLAG);
     expect(secp256k1.verify(sig.slice(0, -1), digest, PUSHTX_PUBKEY)).toBe(true);
     // run just the block on the preimage and compare the derived DER
-    const r = execute(concat(push(pre), asm('a2 OP_TOALTSTACK')), asm(PUSHTX_ASM), { tx, inputIndex: 0 });
+    const r = execute(concat(push(pre), asm(`${CONKERS_FLAG.toString(16)} OP_TOALTSTACK`)), asm(PUSHTX_ASM), { tx, inputIndex: 0 });
     expect(r.ok).toBe(true);
     expect(r.stack[r.stack.length - 2]).toEqual(sig);
   });
@@ -60,7 +60,7 @@ describe('conker lock', () => {
   it('has the expected shape and size', () => {
     const l = conkerLock(lock); const a = toAsm(l);
     expect(a.startsWith('OP_DUP OP_TOALTSTACK OP_DUP OP_4 OP_SPLIT OP_DROP 01000000 OP_EQUALVERIFY')).toBe(true);
-    expect(a).toContain('OP_CODESEPARATOR OP_FROMALTSTACK a2 OP_TOALTSTACK OP_HASH256');
+    expect(a).toContain('OP_CODESEPARATOR OP_FROMALTSTACK e2 OP_TOALTSTACK OP_HASH256');
     expect(a.endsWith('OP_EQUALVERIFY OP_CHECKSIG')).toBe(true);
     expect(l.length).toBeLessThan(700);
     expect(conkerPreimage(base(), 0, lock).length).toBe(4 + 1 + 36 + 3 + lockTail(lock).length + 4 + 1 + 4 + 4);
