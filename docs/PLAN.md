@@ -1,6 +1,6 @@
 # Conkers — build plan v8
 
-State: phase 1 of 5, step 1 (repo scaffold) in progress. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
+State: phase 1 of 5. Steps 1 (scaffold) and 2 (cell layouts, `spec/cells.md`) done. Next: step 3, genesis vectors and `previewMatch` / `scoreSwing` in the mirror. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
 
 ## Our repo, their code as a dependency
 
@@ -148,4 +148,4 @@ So sound is a beacon and setup channel, not a bulk channel. ggwave carries ident
 
 None open. Phase 2 step 1 picks the whoosh's tonal core frequency from measurement (4.5 kHz is the starting guess).
 
-Next: phase 1 step 2, `cartridge.json`.
+Next: phase 1 step 3.

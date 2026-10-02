@@ -7,63 +7,538 @@
   "cellTypes": [
     {
       "name": "conkers.nut",
-      "triple": { "segment1": "conkers", "segment2": "nut", "segment3": "state", "segment4": "" },
+      "triple": {
+        "segment1": "conkers",
+        "segment2": "nut",
+        "segment3": "state",
+        "segment4": ""
+      },
       "linearity": "LINEAR",
       "primaryAnchor": true,
-      "description": "The nut: serial, genesis pair id, mass, volume, hardness, elasticity, owner, hp, wins, losses. LINEAR so a nut is struck once per match and cannot be duplicated or dropped."
+      "description": "The nut: serial, genesis pair id, mass, volume, hardness, elasticity, owner, hp, wins, losses. LINEAR so a nut is struck once per match and cannot be duplicated or dropped.",
+      "payloadSchema": {
+        "serial": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. purchase serial, the genesis input"
+        },
+        "pairId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. h0 = sha256(S || serial): links nut and string"
+        },
+        "massCg": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. centigrams 500..2000"
+        },
+        "volumeCcm3": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. centi-cm³ 200..1200"
+        },
+        "hardness": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 1..100"
+        },
+        "elasticityPct": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 20..80"
+        },
+        "hp": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. 0..10000, minted at 10000, 0 = destroyed"
+        },
+        "wins": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. matches this nut won"
+        },
+        "losses": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. matches this nut lost"
+        },
+        "generation": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. successor count, 0 at mint"
+        },
+        "owner": {
+          "type": "string",
+          "tier": "core",
+          "description": "33-byte hex. compressed secp256k1 pubkey"
+        },
+        "issuer": {
+          "type": "string",
+          "tier": "core",
+          "description": "33-byte hex. issuer pubkey the genesis signature verifies under"
+        },
+        "genesisSig": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. compact r||s RFC 6979 signature over CONKERS-GENESIS-v1"
+        }
+      },
+      "payloadLayout": {
+        "kind": 1,
+        "encoding": "spec/cells.md"
+      }
     },
     {
       "name": "conkers.string",
-      "triple": { "segment1": "conkers", "segment2": "string", "segment3": "state", "segment4": "" },
+      "triple": {
+        "segment1": "conkers",
+        "segment2": "string",
+        "segment3": "state",
+        "segment4": ""
+      },
       "linearity": "LINEAR",
-      "description": "The string: serial, genesis pair id, length, strength, elasticity, owner, intact. LINEAR for the same reason as the nut; a snapped string is a cell whose successor has intact=false."
+      "description": "The string: serial, genesis pair id, length, strength, elasticity, owner, intact. LINEAR for the same reason as the nut; a snapped string is a cell whose successor has intact=false.",
+      "payloadSchema": {
+        "serial": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. same serial as the nut"
+        },
+        "pairId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. same h0 as the nut"
+        },
+        "lengthCm": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 20..40"
+        },
+        "strengthN": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 10..60"
+        },
+        "elasticityPct": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 0..30"
+        },
+        "intact": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 1 intact, 0 snapped"
+        },
+        "generation": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. successor count, 0 at mint"
+        },
+        "owner": {
+          "type": "string",
+          "tier": "core",
+          "description": "33-byte hex. compressed secp256k1 pubkey"
+        },
+        "issuer": {
+          "type": "string",
+          "tier": "core",
+          "description": "33-byte hex. issuer pubkey"
+        },
+        "genesisSig": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. compact signature, same as the nut"
+        }
+      },
+      "payloadLayout": {
+        "kind": 2,
+        "encoding": "spec/cells.md"
+      }
     },
     {
       "name": "conkers.player",
-      "triple": { "segment1": "conkers", "segment2": "player", "segment3": "record", "segment4": "" },
+      "triple": {
+        "segment1": "conkers",
+        "segment2": "player",
+        "segment3": "record",
+        "segment4": ""
+      },
       "linearity": "PERSISTENT",
-      "description": "A person's record, keyed by cert-id: challenges, withdrawals, stalls. Lives on the player, never on a conker, so selling a conker does not launder a flincher."
+      "description": "A person's record, keyed by cert-id: challenges, withdrawals, stalls. Lives on the player, never on a conker, so selling a conker does not launder a flincher.",
+      "payloadSchema": {
+        "certId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. the person, by BRC-52 cert id; never a conker"
+        },
+        "challenges": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. turns faced as target"
+        },
+        "withdrawals": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. turns withdrawn from as target"
+        },
+        "stalls": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. turns never swung as striker"
+        },
+        "matches": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. matches completed"
+        },
+        "wins": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. matches won"
+        },
+        "lastMatchId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. most recent conkers.match cell hash"
+        }
+      },
+      "payloadLayout": {
+        "kind": 3,
+        "encoding": "spec/cells.md"
+      }
     },
     {
       "name": "conkers.swing",
-      "triple": { "segment1": "conkers", "segment2": "swing", "segment3": "turn", "segment4": "" },
+      "triple": {
+        "segment1": "conkers",
+        "segment2": "swing",
+        "segment3": "turn",
+        "segment4": ""
+      },
       "linearity": "EPHEMERAL",
-      "description": "One turn: striker IMU trace summary, target Doppler reading, score, damage. Signed by both phones. Never persisted beyond the match."
+      "description": "One turn: striker IMU trace summary, target Doppler reading, score, damage. Signed by both phones. Never persisted beyond the match.",
+      "payloadSchema": {
+        "matchId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. the match this turn belongs to"
+        },
+        "turn": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. turn index, 0-based"
+        },
+        "strikerCert": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. who swung"
+        },
+        "targetCert": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. who held"
+        },
+        "imuSpeedCmps": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. striker IMU speed at impact, cm/s"
+        },
+        "dopplerSpeedCmps": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. target Doppler radial speed, cm/s"
+        },
+        "planeDeg": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. gravity vs swing plane, degrees"
+        },
+        "twistDegps": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. peak gyro roll, deg/s"
+        },
+        "timingMs": {
+          "type": "integer",
+          "tier": "core",
+          "description": "i16 LE. impact minus target rest, ms"
+        },
+        "followThrough": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 1 decelerated after impact, 0 braked before"
+        },
+        "scoreBp": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. swing score, basis points 0..10000"
+        },
+        "damageStriker": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. hp lost by the striker nut"
+        },
+        "damageTarget": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. hp lost by the target nut"
+        },
+        "snapped": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. bit0 striker string snapped, bit1 target string snapped"
+        },
+        "timestamp": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u64 LE. unix ms at impact, striker clock"
+        },
+        "strikerSig": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. striker signature over bytes [0..timestamp end)"
+        },
+        "targetSig": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. target signature over the same bytes"
+        }
+      },
+      "payloadLayout": {
+        "kind": 4,
+        "encoding": "spec/cells.md"
+      }
     },
     {
       "name": "conkers.withdraw",
-      "triple": { "segment1": "conkers", "segment2": "withdraw", "segment3": "turn", "segment4": "" },
+      "triple": {
+        "segment1": "conkers",
+        "segment2": "withdraw",
+        "segment3": "turn",
+        "segment4": ""
+      },
       "linearity": "EPHEMERAL",
-      "description": "The target pulled away, or the striker never swung (stall). Signed by both phones or ruled by the arbiter."
+      "description": "The target pulled away, or the striker never swung (stall). Signed by both phones or ruled by the arbiter.",
+      "payloadSchema": {
+        "matchId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. the match"
+        },
+        "turn": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. turn index"
+        },
+        "reason": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 1 target withdrew, 2 striker stalled"
+        },
+        "byCert": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. whose record this lands on"
+        },
+        "timestamp": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u64 LE. unix ms"
+        },
+        "sigBy": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. signature of the party it counts against"
+        },
+        "sigOther": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. the other party"
+        },
+        "arbiterSig": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. zero unless the arbiter ruled"
+        }
+      },
+      "payloadLayout": {
+        "kind": 5,
+        "encoding": "spec/cells.md"
+      }
     },
     {
       "name": "conkers.match",
-      "triple": { "segment1": "conkers", "segment2": "match", "segment3": "record", "segment4": "" },
+      "triple": {
+        "segment1": "conkers",
+        "segment2": "match",
+        "segment3": "record",
+        "segment4": ""
+      },
       "linearity": "EPHEMERAL",
-      "description": "The match: both nonces exchanged over ggwave (co-location proof), the turn list, final damage, winner. Both players sign, the arbiter countersigns. What resolve consumes."
+      "description": "The match: both nonces exchanged over ggwave (co-location proof), the turn list, final damage, winner. Both players sign, the arbiter countersigns. What resolve consumes.",
+      "payloadSchema": {
+        "matchId": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. sha256(nutA || nutB || nonceA || nonceB)"
+        },
+        "nutA": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. cell hash consumed"
+        },
+        "stringA": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. cell hash consumed"
+        },
+        "nutB": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. cell hash consumed"
+        },
+        "stringB": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. cell hash consumed"
+        },
+        "certA": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. player A"
+        },
+        "certB": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. player B"
+        },
+        "nonceA": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. sent by A over ggwave, heard and signed by B"
+        },
+        "nonceB": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u32 LE. sent by B over ggwave, heard and signed by A"
+        },
+        "turns": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. number of swing + withdraw cells"
+        },
+        "turnsRoot": {
+          "type": "string",
+          "tier": "core",
+          "description": "32-byte hex. sha256 chain over the turn cells in order"
+        },
+        "hpA": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. nut A hp after the match"
+        },
+        "hpB": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u16 LE. nut B hp after the match"
+        },
+        "intactA": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. string A intact after the match"
+        },
+        "intactB": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. string B intact after the match"
+        },
+        "winner": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u8 LE. 0 draw, 1 A, 2 B"
+        },
+        "startedAt": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u64 LE. unix ms"
+        },
+        "endedAt": {
+          "type": "integer",
+          "tier": "core",
+          "description": "u64 LE. unix ms"
+        },
+        "sigA": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. A over bytes [0..endedAt end)"
+        },
+        "sigB": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. B over the same bytes"
+        },
+        "arbiterSig": {
+          "type": "string",
+          "tier": "core",
+          "description": "64-byte hex. arbiter over the same bytes"
+        }
+      },
+      "payloadLayout": {
+        "kind": 6,
+        "encoding": "spec/cells.md"
+      }
     }
   ],
   "brain": {
     "surface": "walkers",
     "verbsModule": "conkers_walkers",
     "capabilities": [
-      { "name": "cap.conkers.play", "domainFlag": 0, "description": "Authorises mint / pair / swing / withdraw / resolve / transfer.", "holder": "operator-root" }
+      {
+        "name": "cap.conkers.play",
+        "domainFlag": 0,
+        "description": "Authorises mint / pair / swing / withdraw / resolve / transfer.",
+        "holder": "operator-root"
+      }
     ]
   },
   "verbs": [
-    { "name": "mint",     "capability_required": "cap.conkers.play" },
-    { "name": "pair",     "capability_required": "cap.conkers.play" },
-    { "name": "swing",    "capability_required": "cap.conkers.play" },
-    { "name": "withdraw", "capability_required": "cap.conkers.play" },
-    { "name": "resolve",  "capability_required": "cap.conkers.play" },
-    { "name": "transfer", "capability_required": "cap.conkers.play" }
+    {
+      "name": "mint",
+      "capability_required": "cap.conkers.play"
+    },
+    {
+      "name": "pair",
+      "capability_required": "cap.conkers.play"
+    },
+    {
+      "name": "swing",
+      "capability_required": "cap.conkers.play"
+    },
+    {
+      "name": "withdraw",
+      "capability_required": "cap.conkers.play"
+    },
+    {
+      "name": "resolve",
+      "capability_required": "cap.conkers.play"
+    },
+    {
+      "name": "transfer",
+      "capability_required": "cap.conkers.play"
+    }
   ],
   "extension": {
     "id": "conkers",
     "label": "Conkers",
-    "surfaces": ["match"],
-    "channels": ["conkers:*"],
-    "commands": ["/conkers"]
+    "surfaces": [
+      "match"
+    ],
+    "channels": [
+      "conkers:*"
+    ],
+    "commands": [
+      "/conkers"
+    ]
   },
   "_notes": {
     "domainFlag": "0 is a placeholder until a capability page is allocated.",
