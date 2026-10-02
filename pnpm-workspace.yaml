@@ -1,0 +1,12 @@
+packages:
+  - 'mirror'
+  - 'web'
+  # vendored from semantos-core (pinned submodule); only packages whose
+  # @semantos/* deps resolve inside this set
+  - 'vendor/semantos-core/packages/world-client'
+  - 'vendor/semantos-core/core/cell-engine'
+  - 'vendor/semantos-core/core/cell-engine/bindings'
+  - 'vendor/semantos-core/core/cell-ops'
+  - 'vendor/semantos-core/core/protocol-types'
+  - 'vendor/semantos-core/core/state'
+  - 'vendor/semantos-core/core/wallet'

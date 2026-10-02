@@ -1,0 +1,73 @@
+{
+  "id": "conkers",
+  "name": "Conkers",
+  "version": "0.0.1",
+  "role": "experience",
+  "description": "Two phones, two conkers, one swing at a time. A conker is a nut cell and a string cell, both LINEAR, locked in a BSV UTXO under SIGHASH_NONE|ANYONECANPAY|CHRONICLE. Properties derive from a hash chain over a fixed issuer signature (spec/genesis.md). Damage is settled by the match record both players sign; the chain enforces that each conker is consumed once per match.",
+  "cellTypes": [
+    {
+      "name": "conkers.nut",
+      "triple": { "segment1": "conkers", "segment2": "nut", "segment3": "state", "segment4": "" },
+      "linearity": "LINEAR",
+      "primaryAnchor": true,
+      "description": "The nut: serial, genesis pair id, mass, volume, hardness, elasticity, owner, hp, wins, losses. LINEAR so a nut is struck once per match and cannot be duplicated or dropped."
+    },
+    {
+      "name": "conkers.string",
+      "triple": { "segment1": "conkers", "segment2": "string", "segment3": "state", "segment4": "" },
+      "linearity": "LINEAR",
+      "description": "The string: serial, genesis pair id, length, strength, elasticity, owner, intact. LINEAR for the same reason as the nut; a snapped string is a cell whose successor has intact=false."
+    },
+    {
+      "name": "conkers.player",
+      "triple": { "segment1": "conkers", "segment2": "player", "segment3": "record", "segment4": "" },
+      "linearity": "PERSISTENT",
+      "description": "A person's record, keyed by cert-id: challenges, withdrawals, stalls. Lives on the player, never on a conker, so selling a conker does not launder a flincher."
+    },
+    {
+      "name": "conkers.swing",
+      "triple": { "segment1": "conkers", "segment2": "swing", "segment3": "turn", "segment4": "" },
+      "linearity": "EPHEMERAL",
+      "description": "One turn: striker IMU trace summary, target Doppler reading, score, damage. Signed by both phones. Never persisted beyond the match."
+    },
+    {
+      "name": "conkers.withdraw",
+      "triple": { "segment1": "conkers", "segment2": "withdraw", "segment3": "turn", "segment4": "" },
+      "linearity": "EPHEMERAL",
+      "description": "The target pulled away, or the striker never swung (stall). Signed by both phones or ruled by the arbiter."
+    },
+    {
+      "name": "conkers.match",
+      "triple": { "segment1": "conkers", "segment2": "match", "segment3": "record", "segment4": "" },
+      "linearity": "EPHEMERAL",
+      "description": "The match: both nonces exchanged over ggwave (co-location proof), the turn list, final damage, winner. Both players sign, the arbiter countersigns. What resolve consumes."
+    }
+  ],
+  "brain": {
+    "surface": "walkers",
+    "verbsModule": "conkers_walkers",
+    "capabilities": [
+      { "name": "cap.conkers.play", "domainFlag": 0, "description": "Authorises mint / pair / swing / withdraw / resolve / transfer.", "holder": "operator-root" }
+    ]
+  },
+  "verbs": [
+    { "name": "mint",     "capability_required": "cap.conkers.play" },
+    { "name": "pair",     "capability_required": "cap.conkers.play" },
+    { "name": "swing",    "capability_required": "cap.conkers.play" },
+    { "name": "withdraw", "capability_required": "cap.conkers.play" },
+    { "name": "resolve",  "capability_required": "cap.conkers.play" },
+    { "name": "transfer", "capability_required": "cap.conkers.play" }
+  ],
+  "extension": {
+    "id": "conkers",
+    "label": "Conkers",
+    "surfaces": ["match"],
+    "channels": ["conkers:*"],
+    "commands": ["/conkers"]
+  },
+  "_notes": {
+    "domainFlag": "0 is a placeholder until a capability page is allocated.",
+    "sighash": "0xA2 = NONE|ANYONECANPAY|CHRONICLE. OTDA digest. See docs/PLAN.md 'The lock'.",
+    "extension": "Shape follows vendor/semantos-core/docs/design/WORLD-BASE-LAYER.md §5.1; the client contract is packages/world-client/src/extension.ts."
+  }
+}

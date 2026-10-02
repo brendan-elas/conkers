@@ -1,0 +1,4 @@
+[submodule "vendor/semantos-core"]
+	path = vendor/semantos-core
+	url = https://github.com/semantos/semantos-core
+	shallow = true

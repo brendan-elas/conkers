@@ -1,0 +1,11 @@
+{
+  "name": "conkers",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.9.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "pnpm --filter @conkers/mirror test",
+    "typecheck": "pnpm --filter @conkers/mirror typecheck"
+  }
+}
