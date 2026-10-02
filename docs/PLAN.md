@@ -1,6 +1,6 @@
 # Conkers — build plan v8
 
-State: phase 1 of 5. Steps 1 (scaffold), 2 (cell layouts) and 3 (physics reference + dev vectors) done. Next: step 4, lock and unlock scripts in the sectioned assembler. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
+State: phase 1 of 5. Steps 1 to 4 done (scaffold, cell layouts, physics reference, lock + unlock scripts proven in an OTDA-aware oracle). Next: step 5, brain verbs and the regtest round-trip on a Chronicle node. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
 
 ## Our repo, their code as a dependency
 
@@ -148,4 +148,4 @@ So sound is a beacon and setup channel, not a bulk channel. ggwave carries ident
 
 None open. Phase 2 step 1 picks the whoosh's tonal core frequency from measurement (4.5 kHz is the starting guess).
 
-Next: phase 1 step 4.
+Next: phase 1 step 5.

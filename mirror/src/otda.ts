@@ -89,6 +89,16 @@ export function stripCodeSeparators(script: Uint8Array): Uint8Array {
  * any separators left in it are removed here, as Satoshi's algorithm does.
  */
 export function otdaDigest(tx: OtdaTx, inputIndex: number, scriptCode: Uint8Array, flags: number): Uint8Array {
+  const pre = otdaPreimage(tx, inputIndex, scriptCode, flags);
+  if (pre.length === 32) return pre; // the SIGHASH_SINGLE bug value
+  return sha256(sha256(pre));
+}
+
+/**
+ * The OTDA preimage bytes (what the unlocking script pushes for OP_PUSH_TX).
+ * Under 0xA2: version(4) 01 outpoint(36) varint(code) code sequence(4) 00 locktime(4) a2000000.
+ */
+export function otdaPreimage(tx: OtdaTx, inputIndex: number, scriptCode: Uint8Array, flags: number): Uint8Array {
   const base = flags & 0x1f;
   const anyoneCanPay = (flags & SIGHASH.ANYONECANPAY) !== 0;
   if (inputIndex < 0 || inputIndex >= tx.inputs.length) throw new RangeError('inputIndex out of range');
@@ -116,5 +126,5 @@ export function otdaDigest(tx: OtdaTx, inputIndex: number, scriptCode: Uint8Arra
   for (const o of outputs) { w.u64le(o.satoshis); w.varbytes(o.script); }
   w.u32le(tx.lockTime);
   w.u32le(flags);
-  return sha256(sha256(w.out()));
+  return w.out();
 }
