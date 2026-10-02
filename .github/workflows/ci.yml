@@ -4,10 +4,10 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
+      # No submodule checkout: nothing in CI consumes vendor/semantos-core yet.
+      # When web/ starts importing @semantos/world-client, add a classic PAT
+      # with `repo` scope as SEMANTOS_CORE_READ_TOKEN and set submodules: true.
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-          token: ${{ secrets.SEMANTOS_CORE_READ_TOKEN || github.token }}
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm }
