@@ -7,14 +7,16 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "doc:cells": "node --experimental-strip-types scripts/cells-doc.ts"
+    "doc:cells": "node --experimental-strip-types scripts/cells-doc.ts",
+    "vectors": "node --experimental-strip-types scripts/make-vectors.ts"
   },
   "dependencies": {
+    "@noble/curves": "^1.9.7",
     "@noble/hashes": "^1.5.0"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "typescript": "~5.8.0",
-    "vitest": "^2.1.0",
-    "@types/node": "^22.0.0"
+    "vitest": "^2.1.0"
   }
 }

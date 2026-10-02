@@ -1,0 +1,346 @@
+{
+  "_warning": "DEV issuer key. Regenerate with the production issuer before launch.",
+  "genesisMessage": "CONKERS-GENESIS-v1",
+  "issuerPubKey": "02081bf73db160a9c5ed0503b60fca1be37e87772c393d78d7139bbd89784646e8",
+  "genesisSig": "ec4f82ef6b54dbfad66b456dff7531414439f2c462d57d2643b7d814fac629ee24afb8d2fc1e77b2d633116b77a12f2fed78673bd14a14f0a614faffe2577c4b",
+  "conkers": [
+    {
+      "serial": 0,
+      "pairId": "97cd642f1ff3a347a448a08a6c41230554bec1cc03dfb79d16288f42b9856a2f",
+      "nut": {
+        "massCg": 622,
+        "volumeCcm3": 225,
+        "hardness": 1,
+        "elasticityPct": 25
+      },
+      "string": {
+        "lengthCm": 21,
+        "strengthN": 34,
+        "elasticityPct": 27
+      }
+    },
+    {
+      "serial": 1,
+      "pairId": "e4283ba46962959ea6d66499f48d4068f7975e938d6aa19aaac2b24ac312723f",
+      "nut": {
+        "massCg": 1561,
+        "volumeCcm3": 771,
+        "hardness": 51,
+        "elasticityPct": 77
+      },
+      "string": {
+        "lengthCm": 39,
+        "strengthN": 48,
+        "elasticityPct": 11
+      }
+    },
+    {
+      "serial": 2,
+      "pairId": "e1ec1bdfb45e484159666b3c7c9a4ea00552586239bd29e8be20185457a27679",
+      "nut": {
+        "massCg": 1118,
+        "volumeCcm3": 758,
+        "hardness": 59,
+        "elasticityPct": 38
+      },
+      "string": {
+        "lengthCm": 22,
+        "strengthN": 44,
+        "elasticityPct": 2
+      }
+    },
+    {
+      "serial": 7,
+      "pairId": "6048cc5e11929bb2b55f421f2264514cbff9ea3e814b63a6eaa4df55a2972457",
+      "nut": {
+        "massCg": 1780,
+        "volumeCcm3": 709,
+        "hardness": 38,
+        "elasticityPct": 59
+      },
+      "string": {
+        "lengthCm": 34,
+        "strengthN": 14,
+        "elasticityPct": 1
+      }
+    },
+    {
+      "serial": 100,
+      "pairId": "610f7e4d6dd93736dfc1490bfd24dbeac8c7083075d7ba7ff53240560e6acf13",
+      "nut": {
+        "massCg": 584,
+        "volumeCcm3": 438,
+        "hardness": 88,
+        "elasticityPct": 62
+      },
+      "string": {
+        "lengthCm": 27,
+        "strengthN": 43,
+        "elasticityPct": 17
+      }
+    },
+    {
+      "serial": 4096,
+      "pairId": "c0b1b1ff049f3800cc59941d1c1dfa5660af6fe580792eb4d18f0ea1537ed29d",
+      "nut": {
+        "massCg": 890,
+        "volumeCcm3": 892,
+        "hardness": 95,
+        "elasticityPct": 60
+      },
+      "string": {
+        "lengthCm": 39,
+        "strengthN": 37,
+        "elasticityPct": 24
+      }
+    },
+    {
+      "serial": 65535,
+      "pairId": "9c96a1ab9cb9c91a91928b6d79aff0efd00d47bec2f9f8459b1a2178de52c6cf",
+      "nut": {
+        "massCg": 750,
+        "volumeCcm3": 1103,
+        "hardness": 99,
+        "elasticityPct": 70
+      },
+      "string": {
+        "lengthCm": 32,
+        "strengthN": 12,
+        "elasticityPct": 29
+      }
+    },
+    {
+      "serial": 4294967295,
+      "pairId": "9cd4cff07c91052ef9cecc4f3ed26ddbc097f7c1997f32025369b869cd5d01ed",
+      "nut": {
+        "massCg": 1833,
+        "volumeCcm3": 1109,
+        "hardness": 86,
+        "elasticityPct": 36
+      },
+      "string": {
+        "lengthCm": 32,
+        "strengthN": 23,
+        "elasticityPct": 30
+      }
+    }
+  ],
+  "impacts": [
+    {
+      "striker": 0,
+      "target": 1,
+      "swing": {
+        "imuSpeedCmps": 300,
+        "dopplerSpeedCmps": 300,
+        "planeDeg": 0,
+        "twistDegps": 0,
+        "timingMs": 0,
+        "followThrough": true
+      },
+      "scoreBp": 10000,
+      "impulse": "201132",
+      "damageStriker": 3275,
+      "damageTarget": 1400,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 0,
+      "target": 1,
+      "swing": {
+        "imuSpeedCmps": 250,
+        "dopplerSpeedCmps": 230,
+        "planeDeg": 8,
+        "twistDegps": 20,
+        "timingMs": 40,
+        "followThrough": true
+      },
+      "scoreBp": 2067,
+      "impulse": "31873",
+      "damageStriker": 82,
+      "damageTarget": 35,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 0,
+      "target": 1,
+      "swing": {
+        "imuSpeedCmps": 420,
+        "dopplerSpeedCmps": 400,
+        "planeDeg": 15,
+        "twistDegps": 60,
+        "timingMs": -90,
+        "followThrough": false
+      },
+      "scoreBp": 79,
+      "impulse": "2118",
+      "damageStriker": 0,
+      "damageTarget": 0,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 2,
+      "target": 7,
+      "swing": {
+        "imuSpeedCmps": 300,
+        "dopplerSpeedCmps": 300,
+        "planeDeg": 0,
+        "twistDegps": 0,
+        "timingMs": 0,
+        "followThrough": true
+      },
+      "scoreBp": 10000,
+      "impulse": "304584",
+      "damageStriker": 2325,
+      "damageTarget": 3875,
+      "snappedStriker": false,
+      "snappedTarget": true
+    },
+    {
+      "striker": 2,
+      "target": 7,
+      "swing": {
+        "imuSpeedCmps": 250,
+        "dopplerSpeedCmps": 230,
+        "planeDeg": 8,
+        "twistDegps": 20,
+        "timingMs": 40,
+        "followThrough": true
+      },
+      "scoreBp": 2067,
+      "impulse": "48267",
+      "damageStriker": 58,
+      "damageTarget": 96,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 2,
+      "target": 7,
+      "swing": {
+        "imuSpeedCmps": 420,
+        "dopplerSpeedCmps": 400,
+        "planeDeg": 15,
+        "twistDegps": 60,
+        "timingMs": -90,
+        "followThrough": false
+      },
+      "scoreBp": 79,
+      "impulse": "3208",
+      "damageStriker": 0,
+      "damageTarget": 0,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 100,
+      "target": 4096,
+      "swing": {
+        "imuSpeedCmps": 300,
+        "dopplerSpeedCmps": 300,
+        "planeDeg": 0,
+        "twistDegps": 0,
+        "timingMs": 0,
+        "followThrough": true
+      },
+      "scoreBp": 10000,
+      "impulse": "170016",
+      "damageStriker": 538,
+      "damageTarget": 633,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 100,
+      "target": 4096,
+      "swing": {
+        "imuSpeedCmps": 250,
+        "dopplerSpeedCmps": 230,
+        "planeDeg": 8,
+        "twistDegps": 20,
+        "timingMs": 40,
+        "followThrough": true
+      },
+      "scoreBp": 2067,
+      "impulse": "26942",
+      "damageStriker": 13,
+      "damageTarget": 15,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 100,
+      "target": 4096,
+      "swing": {
+        "imuSpeedCmps": 420,
+        "dopplerSpeedCmps": 400,
+        "planeDeg": 15,
+        "twistDegps": 60,
+        "timingMs": -90,
+        "followThrough": false
+      },
+      "scoreBp": 79,
+      "impulse": "1790",
+      "damageStriker": 0,
+      "damageTarget": 0,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 65535,
+      "target": 4294967295,
+      "swing": {
+        "imuSpeedCmps": 300,
+        "dopplerSpeedCmps": 300,
+        "planeDeg": 0,
+        "twistDegps": 0,
+        "timingMs": 0,
+        "followThrough": true
+      },
+      "scoreBp": 10000,
+      "impulse": "244188",
+      "damageStriker": 1012,
+      "damageTarget": 1412,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 65535,
+      "target": 4294967295,
+      "swing": {
+        "imuSpeedCmps": 250,
+        "dopplerSpeedCmps": 230,
+        "planeDeg": 8,
+        "twistDegps": 20,
+        "timingMs": 40,
+        "followThrough": true
+      },
+      "scoreBp": 2067,
+      "impulse": "38696",
+      "damageStriker": 25,
+      "damageTarget": 35,
+      "snappedStriker": false,
+      "snappedTarget": false
+    },
+    {
+      "striker": 65535,
+      "target": 4294967295,
+      "swing": {
+        "imuSpeedCmps": 420,
+        "dopplerSpeedCmps": 400,
+        "planeDeg": 15,
+        "twistDegps": 60,
+        "timingMs": -90,
+        "followThrough": false
+      },
+      "scoreBp": 79,
+      "impulse": "2572",
+      "damageStriker": 0,
+      "damageTarget": 0,
+      "snappedStriker": false,
+      "snappedTarget": false
+    }
+  ]
+}
