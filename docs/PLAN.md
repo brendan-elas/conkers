@@ -1,6 +1,6 @@
 # Conkers — build plan v8
 
-State: phase 1 of 5. Steps 1 to 4 done; step 5 half done: the verbs exist as a TypeScript reference (`mirror/src/verbs.ts`, 55 tests) and the regtest round-trip is green on Bitcoin SV 1.2.2 (2026-10-02: mint, 0xE2 transfer with a wallet fee input added after our signature, three rejections, string spend). Next: the Zig port of the verbs into the brain. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
+State: phase 1 of 5. Steps 1 to 5 done. The regtest round-trip is green on Bitcoin SV 1.2.2 (2026-10-02: mint, 0xE2 transfer with a wallet fee input added after our signature, three rejections, string spend), and the Zig brain (`brain/`, 2026-10-02) reproduces the TypeScript mirror byte for byte against `spec/vectors.json` (derive, cells, physics, lock, mint, resolve, transfer) and exposes the four verbs through the brain's `verb.dispatch`. Still open in phase 1: running the brain's own build with the cartridge (needs Zig 0.15.2; the port was tested here under 0.16 with `brain/test.sh`). Next: phase 2 step 1, the two-phone whoosh experiment. All phase 0 decisions settled: swing is a real whoosh, ggwave for identity, setup and data, withdraw counters on the user.
 
 ## Our repo, their code as a dependency
 
@@ -119,7 +119,7 @@ So sound is a beacon and setup channel, not a bulk channel. ggwave carries ident
 2. `cartridge.json`: cells `conkers.nut` (LINEAR), `conkers.string` (LINEAR), `conkers.player` (PERSISTENT, keyed by identity: challenges, withdrawals, stalls), `conkers.swing` and `conkers.withdraw` (EPHEMERAL), `conkers.match` (EPHEMERAL); cap `cap.conkers.play`; `extensions` section per WORLD-BASE-LAYER §5.1. 2 days.
 3. Genesis spec and vectors: RFC 6979 issuer signature, `h0 = sha256(S || serial)`, chain of 7. 2 days.
 4. Mirror package: `deriveConker`, tx builders, `otdaDigest`, `previewMatch`, `scoreSwing`. 5 days.
-5. Lock scripts (done, oracle-proven); verbs as a TS reference (done: mint, verifyGenesis, resolveMatch with full replay and signature checks, transfer); regtest round-trip on a Chronicle node (harness written, run on a machine with Docker); Zig port of the verbs into the brain (needs the Zig toolchain). 10 days.
+5. Lock scripts (done, oracle-proven and regtest-proven); verbs as a TS reference (done: mint, verifyGenesis, resolveMatch with full replay and signature checks, transfer); regtest round-trip on a Chronicle node (done, green); Zig port of the verbs into the brain (done: `brain/`, byte-exact against `spec/vectors.json`, four walkers + boot spec; the brain's own `zig build test -Dcartridge=` run still needs Zig 0.15.2 on the Mac). 10 days.
 
 ## Phase 2: Solo rig (3 weeks)
 

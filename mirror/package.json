@@ -8,7 +8,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "doc:cells": "node --experimental-strip-types scripts/cells-doc.ts",
-    "vectors": "node --experimental-strip-types scripts/make-vectors.ts",
+    "vectors": "vite-node scripts/make-vectors.ts",
     "regtest": "vite-node scripts/regtest.ts"
   },
   "dependencies": {

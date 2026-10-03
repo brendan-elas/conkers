@@ -14,9 +14,9 @@ Phase 1 of 5. Steps 1 to 4 done. Step 5 half done.
 | 4 lock + unlock | done, oracle-proven | `mirror/src/script.ts`, `mirror/src/interp.ts`, `spec/lock.md`, `scripts/conker.cs` |
 | 5 verbs | TS reference done | `mirror/src/verbs.ts` |
 | 5 regtest | **green** on sv-node 1.2.2 (2026-10-02) | `scripts/regtest.sh`, `mirror/scripts/regtest.ts` |
-| 5 Zig brain port | not started | `brain/` (empty) |
+| 5 Zig brain port | **done** (2026-10-02), byte-exact vs `spec/vectors.json`; brain's own build not yet run (needs Zig 0.15.2) | `brain/` (8 modules, `build.zon`, `test.sh`) |
 
-55 tests: `pnpm install && pnpm test`.
+59 TS tests: `pnpm install && pnpm test`. 30 Zig tests: `brain/test.sh` (Zig 0.16 here; see brain/README.md).
 
 ## Do first, locally
 
@@ -41,6 +41,8 @@ Expected last line: `ALL GREEN: …`. Ran green on 2026-10-02 after two fixes: (
 ## Things learned the hard way
 
 - The vendored `sighash.zig` says FORKID is "ignored under OTDA". For the digest, yes; for the node's signature-encoding check, no. `MUST_USE_FORKID` fires on any sig without 0x40. The TS oracle (`interp.ts`) now enforces this too.
+- Zig 0.16 vs the brain's 0.15.2: `std.ArrayList(u8){}` became `.empty` (both accept `.empty`), `std.meta.intToEnum` is gone (loop the enum fields), and `comptime { return x; }` inside a function must be `return comptime blk: { break :blk x; }`. `brain/` is written to compile under both.
+- `@embedFile("module_name")` works for a build.zon module whose root is a JSON file; that is how `spec/vectors.json` reaches the Zig tests without a copy.
 - The Semantos cell-engine cannot run the lock: `OP_CHECKSIG` is BIP-143-only and demands FORKID, `OP_CODESEPARATOR` is a no-op, `OP_VER` fails, numbers are i64. It is the handler VM only. Proof = `mirror/src/interp.ts` oracle + Chronicle regtest.
 - `core/cell-engine/tools/asm.zig` lacks OP_SPLIT / OP_BIN2NUM / OP_NUM2BIN mnemonics. Feed it hex from `toAsm(conkerLock(...))` or add the entries.
 - Fine-grained GitHub tokens cannot target `semantos/semantos-core` (collaborator, not member). CI therefore skips the submodule; add a classic `repo`-scope token as `SEMANTOS_CORE_READ_TOKEN` when `web/` first imports `@semantos/world-client`.
@@ -48,9 +50,9 @@ Expected last line: `ALL GREEN: …`. Ran green on 2026-10-02 after two fixes: (
 - Hardness 1..100 with damage ∝ 1/hardness is a 100x spread; `hardnessOffset = 25` flattens it to ~5x.
 - String strength is in deci-newtons and strings snap on the impact impulse (`J_eff / 150` mN), not centripetal load.
 
-## Next after regtest is green
+## Next
 
-1. Zig port of `verbs.ts` into `brain/` as a walkers module, modelled on `cartridges/chess/brain` in the submodule, checked against `spec/vectors.json` and the TS tests. Needs Zig 0.15.2.
+1. Run the brain's own build with the cartridge: `brew install zig@0.15`, then `cd vendor/semantos-core/runtime/semantos-brain && zig build test -Dcartridge=$(pwd)/../../../..`. The port is already green under 0.16 via `brain/test.sh` (which patches one ArrayList initialiser in a scratch copy of three vendored files); the real run is the 0.15.2 one.
 2. Phase 2 step 1: two-phone whoosh + Doppler + ggwave experiment (`web/`), 5 days, the riskiest thing in the plan.
 
 ## Working style
